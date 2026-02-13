@@ -60,6 +60,25 @@
             z-index: 1;
         }
 
+        #langToggle {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 3;
+            font-size: 0.9em;
+            padding: 8px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #8b4569;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 6px 16px rgba(255, 182, 193, 0.35);
+            cursor: pointer;
+        }
+
+        #langToggle:hover {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
         .emoji-header {
             font-size: 3.5em;
             margin-bottom: 15px;
@@ -215,6 +234,7 @@
     </style>
 </head>
 <body>
+    <button id="langToggle" type="button" aria-label="Switch language">EN</button>
     <div class="container">
         <div class="emoji-header">🐱 ❤️</div>
         <h1>Will you be my Valentine?</h1>
@@ -231,6 +251,7 @@
         const yesBtn = document.getElementById('yesBtn');
         const message = document.getElementById('message');
         const container = document.querySelector('.container');
+        const langToggle = document.getElementById('langToggle');
         
         let jumpCount = 0;
         let isMorphed = false;
@@ -238,28 +259,97 @@
         let movedToBody = false;
         let originalParent = null;
         let originalNextSibling = null;
-        const fakeYesMessages = [
-            'Hey! That was a fake yes 😤💗',
-            'Nope, not that easy! 😼',
-            'Nice try, but no! 😤',
-            'Caught you! Still no 🙈',
-            'Oops... that was bait 😅',
-            'Hehe, too slow 😌',
-            'Plot twist: still no 😏',
-            'You got bamboozled 😼',
-            'That yes was a lie 😤',
-            'Almost... but nope 😛',
-            'Haha, fooled you 💗',
-            'Try again, cutie 😇',
-            'No button has tricks 😼',
-            'Sneaky, but not enough 😏',
-            'That was a decoy 😅',
-            'Denied! 😤💔',
-            'You clicked the trap 😼',
-            'Not so fast! 😌',
-            'You can do better 😘',
-            'Still a no, sorry! 🙈'
-        ];
+        const translations = {
+            en: {
+                title: 'Be My Valentine? 💖',
+                header: 'Will you be my Valentine?',
+                subtitle: 'Some love stories don\'t allow "no" 🐾',
+                yes: 'Yes 💕',
+                no: 'No 🙈',
+                yesMessage: 'Yay! 🎉💖 Happy Valentine\'s Day! 🥰',
+                fakeYesMessages: [
+                    'Hey! That was a fake yes 😤💗',
+                    'Nope, not that easy! 😼',
+                    'Nice try, but no! 😤',
+                    'Caught you! Still no 🙈',
+                    'Oops... that was bait 😅',
+                    'Hehe, too slow 😌',
+                    'Plot twist: still no 😏',
+                    'You got bamboozled 😼',
+                    'That yes was a lie 😤',
+                    'Almost... but nope 😛',
+                    'Haha, fooled you 💗',
+                    'Try again, cutie 😇',
+                    'No button has tricks 😼',
+                    'Sneaky, but not enough 😏',
+                    'That was a decoy 😅',
+                    'Denied! 😤💔',
+                    'You clicked the trap 😼',
+                    'Not so fast! 😌',
+                    'You can do better 😘',
+                    'Still a no, sorry! 🙈'
+                ],
+                toggleLabel: 'EL',
+                toggleAria: 'Switch language to Greek'
+            },
+            el: {
+                title: 'Θα γίνεις το Βαλεντίνι μου; 💖',
+                header: 'Θα γίνεις το Βαλεντίνι μου;',
+                subtitle: 'Μερικές ιστορίες αγάπης δεν επιτρέπουν το "όχι" 🐾',
+                yes: 'Ναι 💕',
+                no: 'Όχι 🙈',
+                yesMessage: 'Ναι! 🎉💖 Καλή Ημέρα του Αγίου Βαλεντίνου! 🥰',
+                fakeYesMessages: [
+                    'Ε, αυτό ήταν ψεύτικο ναι 😤💗',
+                    'Όχι τόσο εύκολα! 😼',
+                    'Καλή προσπάθεια, αλλά όχι! 😤',
+                    'Σε έπιασα! Ακόμα όχι 🙈',
+                    'Ωχ... ήταν δόλωμα 😅',
+                    'Χεχε, πολύ αργός/ή 😌',
+                    'Ανατροπή: ακόμα όχι 😏',
+                    'Σε μπέρδεψα 😼',
+                    'Αυτό το ναι ήταν ψέμα 😤',
+                    'Παραλίγο... αλλά όχι 😛',
+                    'Χαχα, σε ξεγέλασα 💗',
+                    'Δοκίμασε ξανά, γλυκούλη 😇',
+                    'Το κουμπί όχι έχει κόλπα 😼',
+                    'Ύπουλο, αλλά όχι αρκετό 😏',
+                    'Ήταν απάτη 😅',
+                    'Απορρίπτεται! 😤💔',
+                    'Πάτησες την παγίδα 😼',
+                    'Όχι τόσο γρήγορα! 😌',
+                    'Μπορείς καλύτερα 😘',
+                    'Ακόμα όχι, συγγνώμη! 🙈'
+                ],
+                toggleLabel: 'EN',
+                toggleAria: 'Switch language to English'
+            }
+        };
+
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+            return match ? decodeURIComponent(match[1]) : null;
+        }
+
+        function setCookie(name, value, maxAgeSeconds) {
+            document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}`;
+        }
+
+        let currentLang = getCookie('lang') || 'el';
+
+        function applyLanguage(lang) {
+            currentLang = translations[lang] ? lang : 'en';
+            const t = translations[currentLang];
+
+            document.documentElement.lang = currentLang;
+            document.title = t.title;
+            document.querySelector('h1').textContent = t.header;
+            document.querySelector('.subtitle').textContent = t.subtitle;
+            yesBtn.textContent = t.yes;
+            noBtn.textContent = isMorphed ? t.yes : t.no;
+            langToggle.textContent = t.toggleLabel;
+            langToggle.setAttribute('aria-label', t.toggleAria);
+        }
 
         function logNoButtonState(context) {
             if (!debugEnabled) return;
@@ -371,7 +461,7 @@
         // Function to morph No button into fake Yes button
         function morphToYes() {
             isMorphed = true;
-            noBtn.textContent = 'Yes 💕';
+            noBtn.textContent = translations[currentLang].yes;
             noBtn.classList.add('morphed');
             logNoButtonState('morphed');
         }
@@ -380,11 +470,12 @@
         function resetToNo() {
             isMorphed = false;
             jumpCount = 0;
-            noBtn.textContent = 'No 🙈';
+            noBtn.textContent = translations[currentLang].no;
             noBtn.classList.remove('morphed');
             noBtn.style.display = 'inline-flex';
             noBtn.style.visibility = 'visible';
 
+            const fakeYesMessages = translations[currentLang].fakeYesMessages;
             const randomIndex = Math.floor(Math.random() * fakeYesMessages.length);
             message.textContent = fakeYesMessages[randomIndex];
             message.classList.add('show');
@@ -452,7 +543,7 @@
 
         // Handle Yes button click
         yesBtn.addEventListener('click', () => {
-            message.textContent = 'Yay! 🎉💖 Happy Valentine\'s Day! 🥰';
+            message.textContent = translations[currentLang].yesMessage;
             message.classList.add('show');
             
             // Hide the buttons
@@ -559,6 +650,13 @@
             initNoButton();
             createFloatingHearts();
             logNoButtonState('init');
+            applyLanguage(currentLang);
+        });
+
+        langToggle.addEventListener('click', () => {
+            const nextLang = currentLang === 'en' ? 'el' : 'en';
+            applyLanguage(nextLang);
+            setCookie('lang', nextLang, 60 * 60 * 24 * 365);
         });
     </script>
 </body>
