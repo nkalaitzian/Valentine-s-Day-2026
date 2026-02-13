@@ -89,6 +89,10 @@
         .buttons {
             margin-top: 40px;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
             height: 60px;
         }
 
@@ -123,8 +127,12 @@
         #noBtn {
             background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
             color: #7a7a7a;
-            position: absolute;
+            position: relative;
             transition: none;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #noBtn:hover {
@@ -199,6 +207,65 @@
         
         let jumpCount = 0;
         let isMorphed = false;
+        let debugEnabled = true;
+        const fakeYesMessages = [
+            'Hey! That was a fake yes 😤💗',
+            'Nope, not that easy! 😼',
+            'Nice try, but no! 😤',
+            'Caught you! Still no 🙈',
+            'Oops... that was bait 😅',
+            'Hehe, too slow 😌',
+            'Plot twist: still no 😏',
+            'You got bamboozled 😼',
+            'That yes was a lie 😤',
+            'Almost... but nope 😛',
+            'Haha, fooled you 💗',
+            'Try again, cutie 😇',
+            'No button has tricks 😼',
+            'Sneaky, but not enough 😏',
+            'That was a decoy 😅',
+            'Denied! 😤💔',
+            'You clicked the trap 😼',
+            'Not so fast! 😌',
+            'You can do better 😘',
+            'Still a no, sorry! 🙈'
+        ];
+
+        function logNoButtonState(context) {
+            if (!debugEnabled) return;
+            const rect = noBtn.getBoundingClientRect();
+            const computed = window.getComputedStyle(noBtn);
+            console.log(`[NoBtn] ${context}`, {
+                jumpCount,
+                isMorphed,
+                rect: {
+                    left: rect.left,
+                    top: rect.top,
+                    width: rect.width,
+                    height: rect.height
+                },
+                viewport: {
+                    clientWidth: document.documentElement.clientWidth,
+                    clientHeight: document.documentElement.clientHeight,
+                    innerWidth: window.innerWidth,
+                    innerHeight: window.innerHeight,
+                    visualWidth: window.visualViewport ? window.visualViewport.width : null,
+                    visualHeight: window.visualViewport ? window.visualViewport.height : null,
+                    devicePixelRatio: window.devicePixelRatio
+                },
+                style: {
+                    position: computed.position,
+                    left: computed.left,
+                    top: computed.top,
+                    right: computed.right,
+                    bottom: computed.bottom,
+                    display: computed.display,
+                    visibility: computed.visibility,
+                    transform: computed.transform,
+                    zIndex: computed.zIndex
+                }
+            });
+        }
 
         // Function to move the No button to a random position
         function moveNoButton() {
@@ -206,22 +273,24 @@
             
             // Clear any transform
             noBtn.style.transform = 'none';
+            noBtn.style.display = 'inline-flex';
+            noBtn.style.visibility = 'visible';
             
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
+            const viewportWidth = window.visualViewport ? window.visualViewport.width : document.documentElement.clientWidth;
+            const viewportHeight = window.visualViewport ? window.visualViewport.height : document.documentElement.clientHeight;
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
             // Calculate random position ensuring button stays within viewport with padding
             const padding = 20;
             const minX = padding;
-            const maxX = windowWidth - btnWidth - padding;
+            const maxX = Math.max(minX, viewportWidth - btnWidth - padding);
             const minY = padding;
-            const maxY = windowHeight - btnHeight - padding;
+            const maxY = Math.max(minY, viewportHeight - btnHeight - padding);
             
             // Ensure we have valid ranges
-            const randomX = minX + Math.random() * Math.max(0, maxX - minX);
-            const randomY = minY + Math.random() * Math.max(0, maxY - minY);
+            const randomX = minX + Math.random() * (maxX - minX);
+            const randomY = minY + Math.random() * (maxY - minY);
 
             // Position the button absolutely on the page
             noBtn.style.position = 'fixed';
@@ -229,6 +298,22 @@
             noBtn.style.top = randomY + 'px';
             noBtn.style.right = 'auto';
             noBtn.style.bottom = 'auto';
+
+            const rect = noBtn.getBoundingClientRect();
+            let adjustedLeft = randomX;
+            let adjustedTop = randomY;
+            if (rect.left < padding) adjustedLeft += padding - rect.left;
+            if (rect.right > viewportWidth - padding) adjustedLeft -= rect.right - (viewportWidth - padding);
+            if (rect.top < padding) adjustedTop += padding - rect.top;
+            if (rect.bottom > viewportHeight - padding) adjustedTop -= rect.bottom - (viewportHeight - padding);
+
+            if (adjustedLeft !== randomX || adjustedTop !== randomY) {
+                noBtn.style.left = adjustedLeft + 'px';
+                noBtn.style.top = adjustedTop + 'px';
+                logNoButtonState('clamped');
+            }
+
+            logNoButtonState('moved');
             
             // After 10 jumps, morph into Yes button
             if (jumpCount >= 10 && !isMorphed) {
@@ -241,6 +326,7 @@
             isMorphed = true;
             noBtn.textContent = 'Yes 💕';
             noBtn.classList.add('morphed');
+            logNoButtonState('morphed');
         }
         
         // Function to reset morphed button back to No
@@ -249,6 +335,16 @@
             jumpCount = 0;
             noBtn.textContent = 'No 🙈';
             noBtn.classList.remove('morphed');
+            noBtn.style.display = 'inline-flex';
+            noBtn.style.visibility = 'visible';
+
+            const randomIndex = Math.floor(Math.random() * fakeYesMessages.length);
+            message.textContent = fakeYesMessages[randomIndex];
+            message.classList.add('show');
+            clearTimeout(message._hideTimer);
+            message._hideTimer = setTimeout(() => {
+                message.classList.remove('show');
+            }, 1500);
             
             // Place in a random corner
             const corners = [
@@ -273,6 +369,8 @@
             if (randomCorner.right) noBtn.style.right = randomCorner.right;
             if (randomCorner.top) noBtn.style.top = randomCorner.top;
             if (randomCorner.bottom) noBtn.style.bottom = randomCorner.bottom;
+
+            logNoButtonState('reset');
         }
 
         // Move button when mouse enters (only if not morphed)
@@ -345,12 +443,12 @@
             const buttonsContainer = document.querySelector('.buttons');
             const containerRect = buttonsContainer.getBoundingClientRect();
             
-            noBtn.style.position = 'absolute';
+            noBtn.style.position = 'relative';
             noBtn.style.left = 'auto';
+            noBtn.style.right = 'auto';
+            noBtn.style.top = 'auto';
             noBtn.style.bottom = 'auto';
-            noBtn.style.right = '15px';
-            noBtn.style.top = '50%';
-            noBtn.style.transform = 'translateY(-50%)';
+            noBtn.style.transform = 'none';
         }
 
         // Create floating hearts
@@ -399,6 +497,7 @@
         window.addEventListener('load', () => {
             initNoButton();
             createFloatingHearts();
+            logNoButtonState('init');
         });
     </script>
 </body>
