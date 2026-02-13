@@ -63,3 +63,6 @@ Let them change on page load, or when the yes button is clicked
 33. Oh, let's also rotate the subtitle when the yes button is clicked
 34. Can you create a simple README explaining what the page is?
 Also, create a different section at the bottom of it, displaying every prompt I've asked you so far, from the beginning to the end. If I keep prompting you, add them to the end of the readme.
+35. Can you think of a way to make the webpage more fun?
+Either by adding more functionality, an easter egg, or something else.
+36. I love all three of these ideas.

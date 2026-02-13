@@ -180,6 +180,31 @@
             margin-bottom: 30px;
         }
 
+        .love-meter {
+            width: min(320px, 70vw);
+            height: 10px;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 999px;
+            margin: 14px auto 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            opacity: 0;
+            transform: scaleY(0.7);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .love-meter.visible {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .love-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9ab5 0%, #ffb3c6 100%);
+            transition: width 0.35s ease;
+        }
+
         .heart {
             font-size: 3em;
             margin-bottom: 20px;
@@ -256,6 +281,15 @@
             z-index: 1;
         }
 
+        .cursor-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 14px;
+            opacity: 0.85;
+            animation: cursor-float 0.7s ease-out forwards;
+            z-index: 1;
+        }
+
         @keyframes heart-pop {
             0% {
                 transform: translateY(0) scale(0.8);
@@ -263,6 +297,17 @@
             }
             100% {
                 transform: translateY(-12px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes cursor-float {
+            0% {
+                transform: translateY(0) scale(0.9);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-14px) scale(1.2);
                 opacity: 0;
             }
         }
@@ -335,6 +380,30 @@
             border-color: rgba(255, 210, 228, 0.2);
         }
 
+        body.secret-mode {
+            background: linear-gradient(135deg, #ffd1f0 0%, #ffc3e0 50%, #f3b9ff 100%);
+        }
+
+        body.secret-mode .container {
+            box-shadow: 0 10px 36px rgba(255, 105, 180, 0.35);
+        }
+
+        body.secret-mode .love-meter-fill {
+            background: linear-gradient(90deg, #ff7aa2 0%, #ffa1c6 100%);
+        }
+
+        body.secret-mode #noBtn:not(.morphed) {
+            animation: wiggle 0.6s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-4deg) scale(1.04); }
+            40% { transform: rotate(4deg) scale(1.06); }
+            60% { transform: rotate(-3deg) scale(1.05); }
+            80% { transform: rotate(3deg) scale(1.04); }
+        }
+
         @keyframes throb {
             0%, 100% {
                 box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.5);
@@ -398,6 +467,10 @@
                 margin-bottom: 22px;
             }
 
+            .love-meter {
+                width: min(260px, 80vw);
+            }
+
             .buttons {
                 margin-top: 26px;
                 height: auto;
@@ -454,6 +527,9 @@
             <button id="yesBtn">Yes 💕</button>
             <button id="noBtn">No 🙈</button>
         </div>
+        <div class="love-meter" aria-hidden="true">
+            <div id="loveFill" class="love-meter-fill"></div>
+        </div>
         <div id="message" class="message"></div>
     </div>
     <div class="footer">
@@ -469,6 +545,7 @@
         const container = document.querySelector('.container');
         const langSelect = document.getElementById('langSelect');
         const emojiHeader = document.querySelector('.emoji-header');
+        const loveFill = document.getElementById('loveFill');
         const a11yToggle = document.getElementById('a11yToggle');
         const a11yPanel = document.getElementById('a11yPanel');
         const fontDown = document.getElementById('fontDown');
@@ -483,7 +560,13 @@
         let originalParent = null;
         let originalNextSibling = null;
         let fontScale = 1;
+        let secretTimer = null;
+        let secretModeActive = false;
+        let keyBuffer = '';
+        let lastTrailTime = 0;
+        let loveMeterShown = false;
         const emojiPairs = ['🐱 ❤️', '🐶 💖', '🐰 💕', '🦊 💗', '🐻 🌸', '🐼 💘', '🐣 💞'];
+        const cursorHearts = ['💗', '💖', '💕', '💓'];
         const translations = {
             en: {
                 title: 'Be My Valentine? 💖',
@@ -1089,6 +1172,25 @@
             langSelect.value = currentLang;
         }
 
+        function updateLoveMeter() {
+            if (!loveFill) return;
+            const progress = Math.min(1, Math.max(0, jumpCount / 10));
+            loveFill.style.width = `${progress * 100}%`;
+            const meter = loveFill.parentElement;
+            if (meter) {
+                if (progress > 0) {
+                    loveMeterShown = true;
+                }
+                meter.classList.toggle('visible', loveMeterShown);
+            }
+
+            if (progress >= 1 && secretModeActive) {
+                secretModeActive = false;
+                document.body.classList.remove('secret-mode');
+                message.classList.remove('show');
+            }
+        }
+
         function setRandomSubtitle(t) {
             const subtitleEl = document.querySelector('.subtitle');
             if (!subtitleEl) return;
@@ -1104,6 +1206,30 @@
             if (!emojiHeader) return;
             const randomIndex = Math.floor(Math.random() * emojiPairs.length);
             emojiHeader.textContent = emojiPairs[randomIndex];
+        }
+
+        function activateSecretMode(source) {
+            secretModeActive = true;
+            document.body.classList.add('secret-mode');
+            message.textContent = 'Secret mode unlocked! 💘';
+            message.classList.add('show');
+            createConfetti();
+            rotateEmojiHeader();
+            setRandomSubtitle(translations[currentLang]);
+        }
+
+        function addCursorHeart(x, y) {
+            const now = Date.now();
+            if (now - lastTrailTime < 60) return;
+            lastTrailTime = now;
+
+            const heart = document.createElement('div');
+            heart.className = 'cursor-heart';
+            heart.textContent = cursorHearts[Math.floor(Math.random() * cursorHearts.length)];
+            heart.style.left = (x - 6) + 'px';
+            heart.style.top = (y - 6) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 700);
         }
 
         function logNoButtonState(context) {
@@ -1147,6 +1273,7 @@
         // Function to move the No button to a random position
         function moveNoButton() {
             jumpCount++;
+            updateLoveMeter();
 
             if (!movedToBody) {
                 document.body.appendChild(noBtn);
@@ -1225,6 +1352,7 @@
         function resetToNo() {
             isMorphed = false;
             jumpCount = 0;
+            updateLoveMeter();
             noBtn.textContent = translations[currentLang].no;
             noBtn.classList.remove('morphed');
             noBtn.style.display = 'inline-flex';
@@ -1280,6 +1408,7 @@
         function resetUiState() {
             isMorphed = false;
             jumpCount = 0;
+            updateLoveMeter();
             noBtn.classList.remove('morphed', 'jumping');
             noBtn.style.display = 'inline-flex';
             noBtn.style.visibility = 'visible';
@@ -1298,6 +1427,15 @@
             clearTimeout(message._resetTimer);
             message.textContent = '';
             message.classList.remove('show');
+
+            clearTimeout(secretTimer);
+            secretModeActive = false;
+            document.body.classList.remove('secret-mode');
+
+            loveMeterShown = false;
+            if (loveFill && loveFill.parentElement) {
+                loveFill.parentElement.classList.remove('visible');
+            }
         }
 
         // Move button when mouse enters (only if not morphed)
@@ -1348,6 +1486,7 @@
 
             rotateEmojiHeader();
             setRandomSubtitle(translations[currentLang]);
+            updateLoveMeter();
 
             // Create confetti effect
             createConfetti();
@@ -1461,7 +1600,35 @@
             }
             updateToggleButtons();
             rotateEmojiHeader();
+            updateLoveMeter();
         });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+            keyBuffer = (keyBuffer + e.key).toUpperCase();
+            if (keyBuffer.length > 8) {
+                keyBuffer = keyBuffer.slice(-8);
+            }
+            if (keyBuffer.endsWith('LOVE')) {
+                keyBuffer = '';
+                activateSecretMode('keys');
+            }
+        });
+
+        if (emojiHeader) {
+            emojiHeader.addEventListener('dblclick', () => activateSecretMode('emoji'));
+        }
+
+        if (isTouchMode) {
+            document.addEventListener('touchmove', (e) => {
+                if (!e.touches || !e.touches[0]) return;
+                addCursorHeart(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+        } else {
+            document.addEventListener('pointermove', (e) => {
+                addCursorHeart(e.clientX, e.clientY);
+            });
+        }
 
         langSelect.addEventListener('change', () => {
             const nextLang = langSelect.value;
