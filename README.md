@@ -104,4 +104,8 @@ Either by adding more functionality, an easter egg, or something else.
 	- Proposed secret mode, love meter, and cursor trail.
 36. I love all three of these ideas.
 	- Implemented all three features.
+37. In the accessibility buttons, can we add a reset for the font size and a percentage display for how the size has changed?
+	- Added a reset control and live font size percentage readout.
+38. keep in mind to always update the README.md file with every new prompt
+	- Acknowledged and will keep appending new prompts with summaries.
 </details>

@@ -154,6 +154,17 @@
             cursor: pointer;
         }
 
+        .a11y-label {
+            font-size: 0.75em;
+            padding: 6px 8px;
+            color: #8b4569;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            min-width: 44px;
+            text-align: center;
+        }
+
         .a11y-btn.active {
             background: #ff9ab5;
             color: white;
@@ -515,6 +526,8 @@
         <div id="a11yPanel" class="a11y-panel" aria-hidden="true">
             <button id="fontDown" type="button" class="a11y-btn" aria-label="Decrease font size">A-</button>
             <button id="fontUp" type="button" class="a11y-btn" aria-label="Increase font size">A+</button>
+            <button id="fontReset" type="button" class="a11y-btn" aria-label="Reset font size">Reset</button>
+            <span id="fontPercent" class="a11y-label" aria-live="polite">100%</span>
             <button id="cbToggle" type="button" class="a11y-btn" aria-pressed="false" aria-label="Toggle colorblind mode">CB</button>
             <button id="themeToggle" type="button" class="a11y-btn" aria-pressed="false" aria-label="Toggle dark mode">Dark</button>
         </div>
@@ -550,6 +563,8 @@
         const a11yPanel = document.getElementById('a11yPanel');
         const fontDown = document.getElementById('fontDown');
         const fontUp = document.getElementById('fontUp');
+        const fontReset = document.getElementById('fontReset');
+        const fontPercent = document.getElementById('fontPercent');
         const cbToggle = document.getElementById('cbToggle');
         const themeToggle = document.getElementById('themeToggle');
         
@@ -1118,6 +1133,9 @@
         function applyFontScale(scale) {
             fontScale = Math.max(0.85, Math.min(1.25, scale));
             document.documentElement.style.fontSize = `${fontScale * 100}%`;
+            if (fontPercent) {
+                fontPercent.textContent = `${Math.round(fontScale * 100)}%`;
+            }
         }
 
         function saveA11ySettings() {
@@ -1647,6 +1665,11 @@
 
         fontUp.addEventListener('click', () => {
             applyFontScale(fontScale + 0.05);
+            saveA11ySettings();
+        });
+
+        fontReset.addEventListener('click', () => {
+            applyFontScale(1);
             saveA11ySettings();
         });
 
