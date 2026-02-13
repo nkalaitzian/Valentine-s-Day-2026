@@ -108,4 +108,6 @@ Either by adding more functionality, an easter egg, or something else.
 	- Added a reset control and live font size percentage readout.
 38. keep in mind to always update the README.md file with every new prompt
 	- Acknowledged and will keep appending new prompts with summaries.
+39. Perfect! Can we also add an icon for the browser tab?
+	- Added a simple heart favicon and linked it in the HTML head.
 </details>
