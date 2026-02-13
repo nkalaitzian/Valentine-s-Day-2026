@@ -408,6 +408,16 @@
             animation: wiggle 0.6s ease-in-out infinite;
         }
 
+        body.cupid-cursor {
+            cursor: url('cupid-cursor.svg') 8 8, auto;
+        }
+
+        body.cupid-cursor button,
+        body.cupid-cursor a,
+        body.cupid-cursor select {
+            cursor: url('cupid-cursor.svg') 8 8, pointer;
+        }
+
         @keyframes wiggle {
             0%, 100% { transform: rotate(0deg) scale(1); }
             20% { transform: rotate(-4deg) scale(1.04); }
@@ -1208,6 +1218,8 @@
                 document.body.classList.remove('secret-mode');
                 message.classList.remove('show');
             }
+
+            document.body.classList.toggle('cupid-cursor', progress >= 1 || secretModeActive);
         }
 
         function setRandomSubtitle(t) {
@@ -1230,6 +1242,7 @@
         function activateSecretMode(source) {
             secretModeActive = true;
             document.body.classList.add('secret-mode');
+            document.body.classList.add('cupid-cursor');
             message.textContent = 'Secret mode unlocked! 💘';
             message.classList.add('show');
             createConfetti();
@@ -1450,6 +1463,7 @@
             clearTimeout(secretTimer);
             secretModeActive = false;
             document.body.classList.remove('secret-mode');
+            document.body.classList.remove('cupid-cursor');
 
             loveMeterShown = false;
             if (loveFill && loveFill.parentElement) {

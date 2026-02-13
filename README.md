@@ -12,6 +12,11 @@ A cute, interactive Valentine's Day webpage with playful animations, a mischievo
 ## How to Use
 Open index.html in a browser. Use the language selector in the top-right and the accessibility menu for display options.
 
+## Icon Attribution
+Cupid bow and arrow icon sourced from SVG Repo:
+https://www.svgrepo.com/svg/171822/cupid-bow-and-arrow
+Recolored to match the site's pastel palette.
+
 ---
 
 <details>
@@ -110,4 +115,21 @@ Either by adding more functionality, an easter egg, or something else.
 	- Acknowledged and will keep appending new prompts with summaries.
 39. Perfect! Can we also add an icon for the browser tab?
 	- Added a simple heart favicon and linked it in the HTML head.
+40. Can we make the cursor change into a cupid bow and arrow when something happens? improvise on the conditions
+	- Added a cupid cursor that activates during secret mode or when the love meter fills.
+41. That doesn't really look like a cupid bow and arrow. Can you fix it?
+	- Refined the cursor SVG for a clearer cupid arrow look.
+42. Maybe just a cupid arrow? Like an arrow with a heart at the pointy end, and feathers at the back.
+	- Replaced the cursor with a heart-tipped arrow design.
+43. maybe something that looks more like this
+	- Updated the cursor SVG to resemble the shared bow-and-arrow style.
+44. Change the colors to fit the color scheme
+Also, the shape is wrong
+	- Adjusted the cursor colors to the pastel palette and simplified the bow silhouette.
+45. I've downloaded a SVG from
+https://www.svgrepo.com/svg/171822/cupid-bow-and-arrow
+can you rename the file, color it with some of the colors we're already using and add a disclaimer in the readme about the source of the icon?
+	- Replaced the cursor icon with the downloaded SVG, recolored it, and added attribution.
+46. Rotate the svg 90 degrees counterclockwise
+	- Rotated the cupid cursor SVG by -90 degrees.
 </details>
