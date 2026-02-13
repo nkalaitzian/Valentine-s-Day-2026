@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb3ba 50%, #ffd1dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: float-up linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 50px 70px;
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(255, 182, 193, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .emoji-header {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #8b4569;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #b07a92;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .heart {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #c27ba0;
+        }
+
+        .buttons {
+            margin-top: 40px;
+            position: relative;
+            height: 60px;
+        }
+
+        button {
+            font-size: 1.1em;
+            padding: 12px 35px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff9ab5 0%, #ffb3c6 100%);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 154, 181, 0.4);
+        }
+
+        #yesBtn:active {
+            transform: scale(0.98);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            color: #7a7a7a;
+            position: absolute;
+            transition: none;
+        }
+
+        #noBtn:hover {
+            background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+        }
+
+        #noBtn.morphed {
+            background: linear-gradient(135deg, #ff9ab5 0%, #ffb3c6 100%);
+            color: white;
+            animation: throb 1s ease-in-out infinite;
+            box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.5);
+        }
+
+        @keyframes throb {
+            0%, 100% {
+                box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(255, 82, 82, 0.8);
+                transform: scale(1.05);
+            }
+        }
+
+        .message {
+            margin-top: 30px;
+            font-size: 1.6em;
+            color: #ff6b9d;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #a0566c;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji-header">🐱 ❤️</div>
+        <h1>Will you be my Valentine?</h1>
+        <div class="subtitle">Some love stories don't allow "no" 🐾</div>
+        <div class="buttons">
+            <button id="yesBtn">Yes 💕</button>
+            <button id="noBtn">No 🙈</button>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const message = document.getElementById('message');
+        const container = document.querySelector('.container');
+        
+        let jumpCount = 0;
+        let isMorphed = false;
+
+        // Function to move the No button to a random position
+        function moveNoButton() {
+            jumpCount++;
+            
+            // Clear any transform
+            noBtn.style.transform = 'none';
+            
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Calculate random position ensuring button stays within viewport with padding
+            const padding = 20;
+            const minX = padding;
+            const maxX = windowWidth - btnWidth - padding;
+            const minY = padding;
+            const maxY = windowHeight - btnHeight - padding;
+            
+            // Ensure we have valid ranges
+            const randomX = minX + Math.random() * Math.max(0, maxX - minX);
+            const randomY = minY + Math.random() * Math.max(0, maxY - minY);
+
+            // Position the button absolutely on the page
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.right = 'auto';
+            noBtn.style.bottom = 'auto';
+            
+            // After 10 jumps, morph into Yes button
+            if (jumpCount >= 10 && !isMorphed) {
+                morphToYes();
+            }
+        }
+        
+        // Function to morph No button into fake Yes button
+        function morphToYes() {
+            isMorphed = true;
+            noBtn.textContent = 'Yes 💕';
+            noBtn.classList.add('morphed');
+        }
+        
+        // Function to reset morphed button back to No
+        function resetToNo() {
+            isMorphed = false;
+            jumpCount = 0;
+            noBtn.textContent = 'No 🙈';
+            noBtn.classList.remove('morphed');
+            
+            // Place in a random corner
+            const corners = [
+                { left: '20px', top: '20px' },
+                { right: '20px', top: '20px' },
+                { left: '20px', bottom: '20px' },
+                { right: '20px', bottom: '20px' }
+            ];
+            
+            const randomCorner = corners[Math.floor(Math.random() * corners.length)];
+            noBtn.style.position = 'fixed';
+            noBtn.style.transform = 'none';
+            
+            // Clear all positioning first
+            noBtn.style.left = 'auto';
+            noBtn.style.right = 'auto';
+            noBtn.style.top = 'auto';
+            noBtn.style.bottom = 'auto';
+            
+            // Set the corner position
+            if (randomCorner.left) noBtn.style.left = randomCorner.left;
+            if (randomCorner.right) noBtn.style.right = randomCorner.right;
+            if (randomCorner.top) noBtn.style.top = randomCorner.top;
+            if (randomCorner.bottom) noBtn.style.bottom = randomCorner.bottom;
+        }
+
+        // Move button when mouse enters (only if not morphed)
+        noBtn.addEventListener('mouseenter', () => {
+            if (!isMorphed) {
+                moveNoButton();
+            }
+        });
+
+        // Move button when trying to click
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // If morphed, reset to No button instead of triggering Yes
+            if (isMorphed) {
+                resetToNo();
+            } else {
+                moveNoButton();
+            }
+        });
+
+        // Move button on touch devices
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            
+            if (isMorphed) {
+                resetToNo();
+            } else {
+                moveNoButton();
+            }
+        });
+
+        // Handle Yes button click
+        yesBtn.addEventListener('click', () => {
+            message.textContent = 'Yay! 🎉💖 Happy Valentine\'s Day! 🥰';
+            message.classList.add('show');
+            
+            // Hide the buttons
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+
+            // Create confetti effect
+            createConfetti();
+        });
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#a0566c', '#8e5572', '#c27ba0', '#9b6d85', '#b88ba1'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = '50%';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Initial position for No button
+        function initNoButton() {
+            const buttonsContainer = document.querySelector('.buttons');
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = 'auto';
+            noBtn.style.bottom = 'auto';
+            noBtn.style.right = '15px';
+            noBtn.style.top = '50%';
+            noBtn.style.transform = 'translateY(-50%)';
+        }
+
+        // Create floating hearts
+        function createFloatingHearts() {
+            const hearts = ['💗', '💖', '💕', '💓', '💝', '❤️', '🩷'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                    heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    
+                    document.body.appendChild(heart);
+                    
+                    // Remove and recreate after animation
+                    setTimeout(() => {
+                        heart.remove();
+                        createSingleHeart();
+                    }, parseFloat(heart.style.animationDuration) * 1000);
+                }, i * 200);
+            }
+        }
+        
+        function createSingleHeart() {
+            const hearts = ['💗', '💖', '💕', '💓', '💝', '❤️', '🩷'];
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+                createSingleHeart();
+            }, parseFloat(heart.style.animationDuration) * 1000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            initNoButton();
+            createFloatingHearts();
+        });
+    </script>
+</body>
+</html>
