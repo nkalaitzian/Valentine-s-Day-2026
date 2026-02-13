@@ -62,22 +62,24 @@
             width: min(90vw, 760px);
         }
 
-        #langToggle {
+        #langSelect {
             position: fixed;
             top: 18px;
             right: 18px;
             z-index: 3;
             font-size: 0.9em;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 18px;
             background: rgba(255, 255, 255, 0.8);
             color: #8b4569;
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 6px 16px rgba(255, 182, 193, 0.35);
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
-        #langToggle:hover {
+        #langSelect:hover {
             background: rgba(255, 255, 255, 0.95);
         }
 
@@ -270,7 +272,7 @@
                 margin: 0;
             }
 
-            #langToggle {
+            #langSelect {
                 top: 12px;
                 right: 12px;
                 font-size: 0.85em;
@@ -279,7 +281,21 @@
     </style>
 </head>
 <body>
-    <button id="langToggle" type="button" aria-label="Switch language">EN</button>
+    <select id="langSelect" aria-label="Select language">
+        <option value="el">Greek</option>
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="es">Spanish</option>
+        <option value="pt">Portuguese</option>
+        <option value="it">Italian</option>
+        <option value="bg">Bulgarian</option>
+        <option value="ro">Romanian</option>
+        <option value="pl">Polish</option>
+        <option value="zh">Chinese</option>
+        <option value="ko">Korean</option>
+        <option value="ja">Japanese</option>
+    </select>
     <div class="container">
         <div class="emoji-header">🐱 ❤️</div>
         <h1>Will you be my Valentine?</h1>
@@ -296,7 +312,7 @@
         const yesBtn = document.getElementById('yesBtn');
         const message = document.getElementById('message');
         const container = document.querySelector('.container');
-        const langToggle = document.getElementById('langToggle');
+        const langSelect = document.getElementById('langSelect');
         
         let jumpCount = 0;
         let isMorphed = false;
@@ -334,8 +350,7 @@
                     'You can do better 😘',
                     'Still a no, sorry! 🙈'
                 ],
-                toggleLabel: 'EL',
-                toggleAria: 'Switch language to Greek'
+                langLabel: 'English'
             },
             el: {
                 title: 'Θα γίνεις το Βαλεντίνι μου; 💖',
@@ -366,8 +381,348 @@
                     'Μπορείς καλύτερα 😘',
                     'Ακόμα όχι, συγγνώμη! 🙈'
                 ],
-                toggleLabel: 'EN',
-                toggleAria: 'Switch language to English'
+                langLabel: 'Greek'
+            },
+            fr: {
+                title: 'Veux-tu être mon/ma Valentin(e) ? 💖',
+                header: 'Veux-tu être mon/ma Valentin(e) ?',
+                subtitle: 'Certaines histoires d\'amour n\'acceptent pas le "non" 🐾',
+                yes: 'Oui 💕',
+                no: 'Non 🙈',
+                yesMessage: 'Oui ! 🎉💖 Joyeuse Saint-Valentin ! 🥰',
+                fakeYesMessages: [
+                    'Hé ! C\'était un faux oui 😤💗',
+                    'Pas si facile ! 😼',
+                    'Bien essayé, mais non ! 😤',
+                    'Je t\'ai eu ! Toujours non 🙈',
+                    'Oups... c\'était un piège 😅',
+                    'Héhé, trop lent(e) 😌',
+                    'Plot twist : toujours non 😏',
+                    'Je t\'ai embobiné(e) 😼',
+                    'Ce oui était un mensonge 😤',
+                    'Presque... mais non 😛',
+                    'Haha, je t\'ai eu 💗',
+                    'Réessaie, mignon(ne) 😇',
+                    'Le bouton non a des tours 😼',
+                    'Malin, mais pas assez 😏',
+                    'C\'était un leurre 😅',
+                    'Refusé ! 😤💔',
+                    'Tu as cliqué le piège 😼',
+                    'Pas si vite ! 😌',
+                    'Tu peux faire mieux 😘',
+                    'Toujours non, désolé(e) ! 🙈'
+                ],
+                langLabel: 'French'
+            },
+            de: {
+                title: 'Willst du mein Valentin sein? 💖',
+                header: 'Willst du mein Valentin sein?',
+                subtitle: 'Manche Liebesgeschichten erlauben kein "Nein" 🐾',
+                yes: 'Ja 💕',
+                no: 'Nein 🙈',
+                yesMessage: 'Ja! 🎉💖 Frohen Valentinstag! 🥰',
+                fakeYesMessages: [
+                    'Hey! Das war ein falsches Ja 😤💗',
+                    'So leicht ist das nicht! 😼',
+                    'Guter Versuch, aber nein! 😤',
+                    'Erwischt! Immer noch nein 🙈',
+                    'Ups... das war ein Köder 😅',
+                    'Hehe, zu langsam 😌',
+                    'Plot Twist: immer noch nein 😏',
+                    'Reingelegt 😼',
+                    'Das Ja war gelogen 😤',
+                    'Fast... aber nein 😛',
+                    'Haha, erwischt 💗',
+                    'Versuch es nochmal, Süße(r) 😇',
+                    'Der Nein-Button hat Tricks 😼',
+                    'Clever, aber nicht genug 😏',
+                    'Das war ein Lockvogel 😅',
+                    'Abgelehnt! 😤💔',
+                    'Falle getappt 😼',
+                    'Nicht so schnell! 😌',
+                    'Du kannst es besser 😘',
+                    'Immer noch nein, sorry! 🙈'
+                ],
+                langLabel: 'German'
+            },
+            es: {
+                title: 'Quieres ser mi Valentín? 💖',
+                header: 'Quieres ser mi Valentín?',
+                subtitle: 'Algunas historias de amor no aceptan un "no" 🐾',
+                yes: 'Sí 💕',
+                no: 'No 🙈',
+                yesMessage: '¡Sí! 🎉💖 ¡Feliz San Valentín! 🥰',
+                fakeYesMessages: [
+                    '¡Eh! Ese sí era falso 😤💗',
+                    '¡No tan fácil! 😼',
+                    'Buen intento, pero no 😤',
+                    '¡Te atrapé! Aún no 🙈',
+                    'Ups... era un señuelo 😅',
+                    'Jeje, muy lento 😌',
+                    'Giro: aún no 😏',
+                    'Te engañé 😼',
+                    'Ese sí era mentira 😤',
+                    'Casi... pero no 😛',
+                    'Jaja, te pillé 💗',
+                    'Intenta otra vez, lindo/a 😇',
+                    'El botón no tiene trucos 😼',
+                    'Listo/a, pero no basta 😏',
+                    'Era un señuelo 😅',
+                    '¡Denegado! 😤💔',
+                    'Caíste en la trampa 😼',
+                    '¡No tan rápido! 😌',
+                    'Puedes hacerlo mejor 😘',
+                    'Aún no, lo siento 🙈'
+                ],
+                langLabel: 'Spanish'
+            },
+            pt: {
+                title: 'Quer ser meu/minha Valentin(a)? 💖',
+                header: 'Quer ser meu/minha Valentin(a)?',
+                subtitle: 'Algumas histórias de amor não aceitam "não" 🐾',
+                yes: 'Sim 💕',
+                no: 'Não 🙈',
+                yesMessage: 'Sim! 🎉💖 Feliz Dia dos Namorados! 🥰',
+                fakeYesMessages: [
+                    'Ei! Esse sim era falso 😤💗',
+                    'Não tão fácil! 😼',
+                    'Boa tentativa, mas não 😤',
+                    'Peguei você! Ainda não 🙈',
+                    'Ops... era uma isca 😅',
+                    'Hehe, muito devagar 😌',
+                    'Plot twist: ainda não 😏',
+                    'Te enganei 😼',
+                    'Esse sim era mentira 😤',
+                    'Quase... mas não 😛',
+                    'Haha, peguei você 💗',
+                    'Tente de novo, fofo/a 😇',
+                    'O botão não tem truques 😼',
+                    'Esperto/a, mas não o bastante 😏',
+                    'Era um chamariz 😅',
+                    'Negado! 😤💔',
+                    'Você caiu na armadilha 😼',
+                    'Não tão rápido! 😌',
+                    'Você consegue melhor 😘',
+                    'Ainda não, desculpa! 🙈'
+                ],
+                langLabel: 'Portuguese'
+            },
+            it: {
+                title: 'Vuoi essere il/la mio/a Valentino/a? 💖',
+                header: 'Vuoi essere il/la mio/a Valentino/a?',
+                subtitle: 'Alcune storie d\'amore non accettano un "no" 🐾',
+                yes: 'Sì 💕',
+                no: 'No 🙈',
+                yesMessage: 'Sì! 🎉💖 Buon San Valentino! 🥰',
+                fakeYesMessages: [
+                    'Ehi! Quello era un sì finto 😤💗',
+                    'Non è così facile! 😼',
+                    'Bel tentativo, ma no 😤',
+                    'Ti ho preso! Ancora no 🙈',
+                    'Ops... era un\'esca 😅',
+                    'Hehe, troppo lento/a 😌',
+                    'Colpo di scena: ancora no 😏',
+                    'Ti ho fregato 😼',
+                    'Quel sì era una bugia 😤',
+                    'Quasi... ma no 😛',
+                    'Ahah, ti ho beccato 💗',
+                    'Riprova, tesoro 😇',
+                    'Il tasto no ha dei trucchi 😼',
+                    'Furbo/a, ma non abbastanza 😏',
+                    'Era un\'esca 😅',
+                    'Negato! 😤💔',
+                    'Sei caduto/a nella trappola 😼',
+                    'Non così in fretta! 😌',
+                    'Puoi fare di meglio 😘',
+                    'Ancora no, mi dispiace! 🙈'
+                ],
+                langLabel: 'Italian'
+            },
+            bg: {
+                title: 'Ще бъдеш ли моят Валентин? 💖',
+                header: 'Ще бъдеш ли моят Валентин?',
+                subtitle: 'Някои любовни истории не приемат „не“ 🐾',
+                yes: 'Да 💕',
+                no: 'Не 🙈',
+                yesMessage: 'Да! 🎉💖 Честит Свети Валентин! 🥰',
+                fakeYesMessages: [
+                    'Хей! Това беше фалшиво „да“ 😤💗',
+                    'Не е толкова лесно! 😼',
+                    'Добър опит, но не! 😤',
+                    'Хванах те! Още не 🙈',
+                    'Упс... беше примамка 😅',
+                    'Хе-хе, твърде бавно 😌',
+                    'Изненада: още не 😏',
+                    'Подхлъзнах те 😼',
+                    'Това „да“ беше лъжа 😤',
+                    'Почти... но не 😛',
+                    'Хаха, хванах те 💗',
+                    'Опитай пак, сладур 😇',
+                    'Бутона „не“ има трикове 😼',
+                    'Хитро, но не достатъчно 😏',
+                    'Беше примамка 😅',
+                    'Отказано! 😤💔',
+                    'Влезе в капана 😼',
+                    'Не толкова бързо! 😌',
+                    'Можеш по-добре 😘',
+                    'Още не, съжалявам! 🙈'
+                ],
+                langLabel: 'Bulgarian'
+            },
+            ro: {
+                title: 'Vrei să fii Valentinul meu? 💖',
+                header: 'Vrei să fii Valentinul meu?',
+                subtitle: 'Unele povești de dragoste nu acceptă un „nu” 🐾',
+                yes: 'Da 💕',
+                no: 'Nu 🙈',
+                yesMessage: 'Da! 🎉💖 La mulți ani de Valentine\'s Day! 🥰',
+                fakeYesMessages: [
+                    'Hei! Asta a fost un da fals 😤💗',
+                    'Nu chiar așa ușor! 😼',
+                    'Încercare bună, dar nu! 😤',
+                    'Te-am prins! Tot nu 🙈',
+                    'Ups... a fost o momeală 😅',
+                    'Hehe, prea încet 😌',
+                    'Răsturnare: tot nu 😏',
+                    'Te-am păcălit 😼',
+                    'Da-ul ăla a fost o minciună 😤',
+                    'Aproape... dar nu 😛',
+                    'Haha, te-am prins 💗',
+                    'Încearcă din nou, drăguț/ă 😇',
+                    'Butonul de nu are trucuri 😼',
+                    'Șmecher, dar nu destul 😏',
+                    'A fost o momeală 😅',
+                    'Respins! 😤💔',
+                    'Ai căzut în capcană 😼',
+                    'Nu așa repede! 😌',
+                    'Poți mai bine 😘',
+                    'Tot nu, îmi pare rău! 🙈'
+                ],
+                langLabel: 'Romanian'
+            },
+            pl: {
+                title: 'Zostaniesz moją Walentynką? 💖',
+                header: 'Zostaniesz moją Walentynką?',
+                subtitle: 'Niektóre historie miłosne nie przyjmują "nie" 🐾',
+                yes: 'Tak 💕',
+                no: 'Nie 🙈',
+                yesMessage: 'Tak! 🎉💖 Szczęśliwego Walentynkowego Dnia! 🥰',
+                fakeYesMessages: [
+                    'Hej! To było fałszywe tak 😤💗',
+                    'Nie tak łatwo! 😼',
+                    'Dobry prób, ale nie 😤',
+                    'Mam cię! Wciąż nie 🙈',
+                    'Ups... to była przynęta 😅',
+                    'Hehe, za wolno 😌',
+                    'Zwrot akcji: wciąż nie 😏',
+                    'Nabrałem cię 😼',
+                    'To tak było kłamstwem 😤',
+                    'Prawie... ale nie 😛',
+                    'Haha, mam cię 💗',
+                    'Spróbuj jeszcze raz, słodziaku 😇',
+                    'Przycisk nie ma sztuczki 😼',
+                    'Sprytne, ale niewystarczające 😏',
+                    'To był wabik 😅',
+                    'Odrzucone! 😤💔',
+                    'Wpadłeś/aś w pułapkę 😼',
+                    'Nie tak szybko! 😌',
+                    'Możesz lepiej 😘',
+                    'Wciąż nie, przepraszam! 🙈'
+                ],
+                langLabel: 'Polish'
+            },
+            zh: {
+                title: '你愿意做我的情人吗？💖',
+                header: '你愿意做我的情人吗？',
+                subtitle: '有些爱情故事不接受“不要” 🐾',
+                yes: '愿意 💕',
+                no: '不要 🙈',
+                yesMessage: '愿意！🎉💖 情人节快乐！🥰',
+                fakeYesMessages: [
+                    '嘿！那是假的愿意 😤💗',
+                    '没这么容易！😼',
+                    '好尝试，但不行 😤',
+                    '抓到你了！还是不行 🙈',
+                    '哎呀…那是诱饵 😅',
+                    '嘿嘿，太慢了 😌',
+                    '反转：还是不行 😏',
+                    '被我骗到啦 😼',
+                    '那个“愿意”是假的 😤',
+                    '差点…但不行 😛',
+                    '哈哈，骗到你了 💗',
+                    '再试一次呀 😇',
+                    '不按钮有花招 😼',
+                    '机灵，但还不够 😏',
+                    '那是个诱饵 😅',
+                    '拒绝！😤💔',
+                    '掉进陷阱了 😼',
+                    '别这么快！😌',
+                    '你可以更好 😘',
+                    '还是不行，抱歉！🙈'
+                ],
+                langLabel: 'Chinese'
+            },
+            ko: {
+                title: '내 발렌타인이 되어줄래? 💖',
+                header: '내 발렌타인이 되어줄래?',
+                subtitle: '어떤 사랑 이야기는 “아니오”를 허락하지 않아 🐾',
+                yes: '응 💕',
+                no: '아니 🙈',
+                yesMessage: '응! 🎉💖 해피 발렌타인데이! 🥰',
+                fakeYesMessages: [
+                    '에이! 그건 가짜 응이야 😤💗',
+                    '그렇게 쉽지 않아! 😼',
+                    '좋은 시도지만 아니야 😤',
+                    '잡았다! 아직 아니야 🙈',
+                    '앗… 미끼였지 😅',
+                    '헤헤, 너무 느려 😌',
+                    '반전: 아직 아니야 😏',
+                    '속았지 😼',
+                    '그 응은 거짓말이야 😤',
+                    '거의… 하지만 아니야 😛',
+                    '하하, 속았어 💗',
+                    '다시 해봐, 귀여워 😇',
+                    '아니 버튼에 함정이 있어 😼',
+                    '영리하지만 부족해 😏',
+                    '미끼였어 😅',
+                    '거절! 😤💔',
+                    '덫에 걸렸어 😼',
+                    '그렇게 빨리는 안 돼! 😌',
+                    '더 잘할 수 있어 😘',
+                    '아직 아니야, 미안! 🙈'
+                ],
+                langLabel: 'Korean'
+            },
+            ja: {
+                title: '私のバレンタインになってくれる？💖',
+                header: '私のバレンタインになってくれる？',
+                subtitle: 'ある恋物語は「いいえ」を許さない 🐾',
+                yes: 'はい 💕',
+                no: 'いいえ 🙈',
+                yesMessage: 'はい！🎉💖 ハッピーバレンタイン！🥰',
+                fakeYesMessages: [
+                    'えへ！それは偽物のはい 😤💗',
+                    'そんなに簡単じゃない！😼',
+                    'いい試みだけど、いいえ 😤',
+                    'つかまえた！まだいいえ 🙈',
+                    'おっと…それは餌だった 😅',
+                    'へへ、遅いよ 😌',
+                    'どんでん返し：まだいいえ 😏',
+                    'だまされたね 😼',
+                    'その「はい」は嘘だよ 😤',
+                    '惜しい…でもいいえ 😛',
+                    'はは、だまされた 💗',
+                    'もう一回やってみて 😇',
+                    'いいえボタンには罠がある 😼',
+                    '賢いけど足りない 😏',
+                    'それは囮だった 😅',
+                    '却下！😤💔',
+                    '罠にかかったね 😼',
+                    'そんなに急がないで！😌',
+                    'もっと頑張れるよ 😘',
+                    'まだいいえ、ごめんね！🙈'
+                ],
+                langLabel: 'Japanese'
             }
         };
 
@@ -393,8 +748,7 @@
             document.querySelector('.subtitle').textContent = t.subtitle;
             yesBtn.textContent = t.yes;
             noBtn.textContent = isMorphed ? t.yes : t.no;
-            langToggle.textContent = t.toggleLabel;
-            langToggle.setAttribute('aria-label', t.toggleAria);
+            langSelect.value = currentLang;
         }
 
         function logNoButtonState(context) {
@@ -745,8 +1099,8 @@
             applyLanguage(currentLang);
         });
 
-        langToggle.addEventListener('click', () => {
-            const nextLang = currentLang === 'en' ? 'el' : 'en';
+        langSelect.addEventListener('change', () => {
+            const nextLang = langSelect.value;
             applyLanguage(nextLang);
             setCookie('lang', nextLang, 60 * 60 * 24 * 365);
         });
