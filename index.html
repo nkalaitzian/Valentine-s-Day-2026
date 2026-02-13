@@ -128,15 +128,42 @@
             background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
             color: #7a7a7a;
             position: relative;
-            transition: none;
+            transition: left 0.35s ease, top 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
             z-index: 2;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid rgba(255, 154, 181, 0.7);
+            box-shadow: 0 6px 18px rgba(255, 154, 181, 0.35);
         }
 
         #noBtn:hover {
             background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+            box-shadow: 0 8px 24px rgba(255, 154, 181, 0.5);
+        }
+
+        #noBtn.jumping {
+            transform: scale(1.03) rotate(-2deg);
+        }
+
+        .heart-trail {
+            position: fixed;
+            pointer-events: none;
+            font-size: 16px;
+            opacity: 0.9;
+            animation: heart-pop 0.6s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes heart-pop {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-12px) scale(1.2);
+                opacity: 0;
+            }
         }
 
         #noBtn.morphed {
@@ -208,6 +235,9 @@
         let jumpCount = 0;
         let isMorphed = false;
         let debugEnabled = true;
+        let movedToBody = false;
+        let originalParent = null;
+        let originalNextSibling = null;
         const fakeYesMessages = [
             'Hey! That was a fake yes 😤💗',
             'Nope, not that easy! 😼',
@@ -238,6 +268,8 @@
             console.log(`[NoBtn] ${context}`, {
                 jumpCount,
                 isMorphed,
+                movedToBody,
+                parentTag: noBtn.parentElement ? noBtn.parentElement.tagName : null,
                 rect: {
                     left: rect.left,
                     top: rect.top,
@@ -270,11 +302,20 @@
         // Function to move the No button to a random position
         function moveNoButton() {
             jumpCount++;
+
+            if (!movedToBody) {
+                document.body.appendChild(noBtn);
+                movedToBody = true;
+                logNoButtonState('moved-to-body');
+            }
             
             // Clear any transform
             noBtn.style.transform = 'none';
             noBtn.style.display = 'inline-flex';
             noBtn.style.visibility = 'visible';
+
+            const currentRect = noBtn.getBoundingClientRect();
+            createHeartTrail(currentRect.left + currentRect.width / 2, currentRect.top + currentRect.height / 2);
             
             const viewportWidth = window.visualViewport ? window.visualViewport.width : document.documentElement.clientWidth;
             const viewportHeight = window.visualViewport ? window.visualViewport.height : document.documentElement.clientHeight;
@@ -298,6 +339,12 @@
             noBtn.style.top = randomY + 'px';
             noBtn.style.right = 'auto';
             noBtn.style.bottom = 'auto';
+
+            noBtn.classList.remove('jumping');
+            requestAnimationFrame(() => {
+                noBtn.classList.add('jumping');
+                setTimeout(() => noBtn.classList.remove('jumping'), 350);
+            });
 
             const rect = noBtn.getBoundingClientRect();
             let adjustedLeft = randomX;
@@ -442,6 +489,9 @@
         function initNoButton() {
             const buttonsContainer = document.querySelector('.buttons');
             const containerRect = buttonsContainer.getBoundingClientRect();
+
+            originalParent = noBtn.parentElement;
+            originalNextSibling = noBtn.nextElementSibling;
             
             noBtn.style.position = 'relative';
             noBtn.style.left = 'auto';
@@ -491,6 +541,17 @@
                 heart.remove();
                 createSingleHeart();
             }, parseFloat(heart.style.animationDuration) * 1000);
+        }
+
+        function createHeartTrail(x, y) {
+            const hearts = ['💗', '💕', '💖'];
+            const trail = document.createElement('div');
+            trail.className = 'heart-trail';
+            trail.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            trail.style.left = (x - 6) + 'px';
+            trail.style.top = (y - 6) + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 600);
         }
 
         // Initialize on load
