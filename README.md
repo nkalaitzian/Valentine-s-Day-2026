@@ -137,4 +137,6 @@ The cursor can still change to the cupid bow when secret mode is turned on
 	- Added a heart cursor as the default and kept the cupid cursor for secret mode.
 48. Rotate the heart cursor svg 180 degrees
 	- Rotated the heart cursor SVG by 180 degrees.
+49. secret mode disables dark mode
+	- Added combined dark-mode + secret-mode styles so dark mode stays active.
 </details>
