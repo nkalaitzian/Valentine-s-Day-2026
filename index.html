@@ -468,6 +468,7 @@
         const message = document.getElementById('message');
         const container = document.querySelector('.container');
         const langSelect = document.getElementById('langSelect');
+        const emojiHeader = document.querySelector('.emoji-header');
         const a11yToggle = document.getElementById('a11yToggle');
         const a11yPanel = document.getElementById('a11yPanel');
         const fontDown = document.getElementById('fontDown');
@@ -482,6 +483,7 @@
         let originalParent = null;
         let originalNextSibling = null;
         let fontScale = 1;
+        const emojiPairs = ['🐱 ❤️', '🐶 💖', '🐰 💕', '🦊 💗', '🐻 🌸', '🐼 💘', '🐣 💞'];
         const translations = {
             en: {
                 title: 'Be My Valentine? 💖',
@@ -1081,15 +1083,27 @@
             document.documentElement.lang = currentLang;
             document.title = t.title;
             document.querySelector('h1').textContent = t.header;
-            if (Array.isArray(t.subtitles) && t.subtitles.length > 0) {
-                const randomIndex = Math.floor(Math.random() * t.subtitles.length);
-                document.querySelector('.subtitle').textContent = t.subtitles[randomIndex];
-            } else {
-                document.querySelector('.subtitle').textContent = t.subtitle;
-            }
+            setRandomSubtitle(t);
             yesBtn.textContent = t.yes;
             noBtn.textContent = isMorphed ? t.yes : t.no;
             langSelect.value = currentLang;
+        }
+
+        function setRandomSubtitle(t) {
+            const subtitleEl = document.querySelector('.subtitle');
+            if (!subtitleEl) return;
+            if (Array.isArray(t.subtitles) && t.subtitles.length > 0) {
+                const randomIndex = Math.floor(Math.random() * t.subtitles.length);
+                subtitleEl.textContent = t.subtitles[randomIndex];
+            } else {
+                subtitleEl.textContent = t.subtitle;
+            }
+        }
+
+        function rotateEmojiHeader() {
+            if (!emojiHeader) return;
+            const randomIndex = Math.floor(Math.random() * emojiPairs.length);
+            emojiHeader.textContent = emojiPairs[randomIndex];
         }
 
         function logNoButtonState(context) {
@@ -1332,6 +1346,9 @@
             message.textContent = translations[currentLang].yesMessage;
             message.classList.add('show');
 
+            rotateEmojiHeader();
+            setRandomSubtitle(translations[currentLang]);
+
             // Create confetti effect
             createConfetti();
 
@@ -1443,6 +1460,7 @@
                 applyFontScale(1);
             }
             updateToggleButtons();
+            rotateEmojiHeader();
         });
 
         langSelect.addEventListener('change', () => {
