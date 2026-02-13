@@ -5,9 +5,16 @@ A cute, interactive Valentine's Day webpage with playful animations, a mischievo
 ## Features
 - Animated floating hearts background
 - Playful "No" button that moves and morphs
+- Smooth jumping animation with heart trails
+- Love meter that fills with jumps
+- Secret mode (LOVE key combo or double-click emoji)
+- Emoji header rotation on load and Yes clicks
 - Multi-language support with rotating subtitles
-- Accessibility controls (font size, colorblind palette, dark mode)
-- Local preference persistence via cookies
+- Accessibility controls (font size with reset/percent, colorblind palette, dark mode)
+- Cursor effects (heart cursor, cupid cursor in secret mode, trail)
+- Persistent preferences via cookies (language and accessibility)
+- Minimal footer links (Ko-fi + GitHub)
+- Favicon
 
 ## How to Use
 Open index.html in a browser. Use the language selector in the top-right and the accessibility menu for display options.
@@ -139,4 +146,6 @@ The cursor can still change to the cupid bow when secret mode is turned on
 	- Rotated the heart cursor SVG by 180 degrees.
 49. secret mode disables dark mode
 	- Added combined dark-mode + secret-mode styles so dark mode stays active.
+50. Update the readme to showcase all features
+	- Expanded the features list to reflect all current functionality.
 </details>
