@@ -132,4 +132,9 @@ can you rename the file, color it with some of the colors we're already using an
 	- Replaced the cursor icon with the downloaded SVG, recolored it, and added attribution.
 46. Rotate the svg 90 degrees counterclockwise
 	- Rotated the cupid cursor SVG by -90 degrees.
+47. Have the cursor be a heart at all times, with the point of the heart pointing to the upper-left
+The cursor can still change to the cupid bow when secret mode is turned on
+	- Added a heart cursor as the default and kept the cupid cursor for secret mode.
+48. Rotate the heart cursor svg 180 degrees
+	- Rotated the heart cursor SVG by 180 degrees.
 </details>
