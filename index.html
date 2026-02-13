@@ -58,6 +58,8 @@
             box-shadow: 0 8px 32px rgba(255, 182, 193, 0.3);
             position: relative;
             z-index: 1;
+            max-width: 760px;
+            width: min(90vw, 760px);
         }
 
         #langToggle {
@@ -113,6 +115,7 @@
             align-items: center;
             gap: 16px;
             height: 60px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -231,6 +234,48 @@
                 opacity: 0;
             }
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                padding: 28px 22px;
+                border-radius: 24px;
+            }
+
+            .emoji-header {
+                font-size: 2.6em;
+            }
+
+            h1 {
+                font-size: 1.35em;
+            }
+
+            .subtitle {
+                font-size: 0.85em;
+                margin-bottom: 22px;
+            }
+
+            .buttons {
+                margin-top: 26px;
+                height: auto;
+                gap: 12px;
+            }
+
+            button {
+                font-size: 1em;
+                padding: 10px 26px;
+                margin: 0;
+            }
+
+            #langToggle {
+                top: 12px;
+                right: 12px;
+                font-size: 0.85em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -336,6 +381,7 @@
         }
 
         let currentLang = getCookie('lang') || 'el';
+        const isTouchMode = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
 
         function applyLanguage(lang) {
             currentLang = translations[lang] ? lang : 'en';
@@ -512,11 +558,13 @@
         }
 
         // Move button when mouse enters (only if not morphed)
-        noBtn.addEventListener('mouseenter', () => {
-            if (!isMorphed) {
-                moveNoButton();
-            }
-        });
+        if (!isTouchMode) {
+            noBtn.addEventListener('mouseenter', () => {
+                if (!isMorphed) {
+                    moveNoButton();
+                }
+            });
+        }
 
         // Move button when trying to click
         noBtn.addEventListener('click', (e) => {
@@ -531,15 +579,24 @@
         });
 
         // Move button on touch devices
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            
-            if (isMorphed) {
-                resetToNo();
-            } else {
-                moveNoButton();
-            }
-        });
+        if (isTouchMode) {
+            document.addEventListener('touchstart', (e) => {
+                if (e.target === yesBtn) return;
+
+                if (isMorphed) {
+                    if (e.target === noBtn) {
+                        e.preventDefault();
+                        resetToNo();
+                    }
+                    return;
+                }
+
+                if (e.target === noBtn || e.target.closest('.buttons')) {
+                    e.preventDefault();
+                    moveNoButton();
+                }
+            }, { passive: false });
+        }
 
         // Handle Yes button click
         yesBtn.addEventListener('click', () => {
