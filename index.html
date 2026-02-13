@@ -557,6 +557,40 @@
             logNoButtonState('reset');
         }
 
+        function restoreNoButtonToContainer() {
+            if (originalParent && movedToBody) {
+                if (originalNextSibling && originalNextSibling.parentElement === originalParent) {
+                    originalParent.insertBefore(noBtn, originalNextSibling);
+                } else {
+                    originalParent.appendChild(noBtn);
+                }
+                movedToBody = false;
+            }
+        }
+
+        function resetUiState() {
+            isMorphed = false;
+            jumpCount = 0;
+            noBtn.classList.remove('morphed', 'jumping');
+            noBtn.style.display = 'inline-flex';
+            noBtn.style.visibility = 'visible';
+            noBtn.style.transform = 'none';
+            noBtn.style.position = 'relative';
+            noBtn.style.left = 'auto';
+            noBtn.style.right = 'auto';
+            noBtn.style.top = 'auto';
+            noBtn.style.bottom = 'auto';
+
+            restoreNoButtonToContainer();
+            initNoButton();
+            applyLanguage(currentLang);
+
+            clearTimeout(message._hideTimer);
+            clearTimeout(message._resetTimer);
+            message.textContent = '';
+            message.classList.remove('show');
+        }
+
         // Move button when mouse enters (only if not morphed)
         if (!isTouchMode) {
             noBtn.addEventListener('mouseenter', () => {
@@ -602,13 +636,14 @@
         yesBtn.addEventListener('click', () => {
             message.textContent = translations[currentLang].yesMessage;
             message.classList.add('show');
-            
-            // Hide the buttons
-            yesBtn.style.display = 'none';
-            noBtn.style.display = 'none';
 
             // Create confetti effect
             createConfetti();
+
+            clearTimeout(message._resetTimer);
+            message._resetTimer = setTimeout(() => {
+                resetUiState();
+            }, 5000);
         });
 
         // Confetti effect
