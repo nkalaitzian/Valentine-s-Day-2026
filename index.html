@@ -252,15 +252,16 @@
         #yesBtn {
             background: linear-gradient(135deg, #ff9ab5 0%, #ffb3c6 100%);
             color: white;
+            transform: scale(var(--yes-scale, 1));
         }
 
         #yesBtn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(var(--yes-scale, 1));
             box-shadow: 0 6px 20px rgba(255, 154, 181, 0.4);
         }
 
         #yesBtn:active {
-            transform: scale(0.98);
+            transform: scale(var(--yes-scale, 1));
         }
 
         #noBtn {
@@ -608,6 +609,7 @@
         let keyBuffer = '';
         let lastTrailTime = 0;
         let loveMeterShown = false;
+        let yesScale = 1;
         const emojiPairs = ['🐱 ❤️', '🐶 💖', '🐰 💕', '🦊 💗', '🐻 🌸', '🐼 💘', '🐣 💞'];
         const cursorHearts = ['💗', '💖', '💕', '💓'];
         const translations = {
@@ -1239,6 +1241,10 @@
             document.body.classList.toggle('cupid-cursor', progress >= 1 || secretModeActive);
         }
 
+        function updateYesButtonScale() {
+            yesBtn.style.setProperty('--yes-scale', String(yesScale));
+        }
+
         function setRandomSubtitle(t) {
             const subtitleEl = document.querySelector('.subtitle');
             if (!subtitleEl) return;
@@ -1323,6 +1329,8 @@
         function moveNoButton() {
             jumpCount++;
             updateLoveMeter();
+            yesScale = yesScale * 1.1;
+            updateYesButtonScale();
 
             if (!movedToBody) {
                 document.body.appendChild(noBtn);
@@ -1458,6 +1466,8 @@
             isMorphed = false;
             jumpCount = 0;
             updateLoveMeter();
+            yesScale = 1;
+            updateYesButtonScale();
             noBtn.classList.remove('morphed', 'jumping');
             noBtn.style.display = 'inline-flex';
             noBtn.style.visibility = 'visible';
@@ -1540,6 +1550,9 @@
 
             // Create confetti effect
             createConfetti();
+
+            yesScale = 1;
+            updateYesButtonScale();
 
             clearTimeout(message._resetTimer);
             message._resetTimer = setTimeout(() => {
@@ -1651,6 +1664,7 @@
             updateToggleButtons();
             rotateEmojiHeader();
             updateLoveMeter();
+            updateYesButtonScale();
         });
 
         document.addEventListener('keydown', (e) => {

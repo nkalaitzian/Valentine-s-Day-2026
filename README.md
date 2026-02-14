@@ -148,4 +148,10 @@ The cursor can still change to the cupid bow when secret mode is turned on
 	- Added combined dark-mode + secret-mode styles so dark mode stays active.
 50. Update the readme to showcase all features
 	- Expanded the features list to reflect all current functionality.
+51. Can we make the Yes button grow like 10% bigger every time the No button jumps? It can reset in size after the yes button is clicked.
+	- Added progressive Yes-button scaling per No jump and reset on Yes.
+52. it stops getting bigger after the no button jumps 10 times
+	- Raised the maximum Yes-button scale so it keeps growing longer.
+53. remove the upper limit
+	- Removed the cap so the Yes button can grow indefinitely.
 </details>
